@@ -80,7 +80,7 @@ public class IntervalPreference extends DialogPreference {
     private class TwoDigitFormatter implements NumberPicker.Formatter {
         @Override
         public String format(int i) {
-            return String.format("%02d %s", i);
+            return String.format("%02d", i);
         }
     }
 }

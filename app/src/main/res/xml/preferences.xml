@@ -1,0 +1,36 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:title="@string/enable"
+        android:key="enabled"
+        android:defaultValue="true"/>
+
+    <com.shaibarack.wifitimer.settings.IntervalPreference
+        android:title="@string/sec_until_enable_title"
+        android:dialogTitle="@string/sec_until_enable_title"
+        android:dependency="enabled"
+        android:key="sec_until_enable"
+        android:defaultValue="60"
+        android:dialogLayout="@layout/interval_picker"/>
+
+    <CheckBoxPreference
+        android:title="@string/show_enable_now_title"
+        android:dependency="enabled"
+        android:key="show_enable_now"
+        android:defaultValue="false"/>
+
+    <CheckBoxPreference
+        android:title="@string/show_snooze_title"
+        android:dependency="enabled"
+        android:key="show_snooze"
+        android:defaultValue="true"/>
+
+    <com.shaibarack.wifitimer.settings.IntervalPreference
+        android:title="@string/snooze_interval_title"
+        android:dialogTitle="@string/snooze_interval_title"
+        android:dependency="show_snooze"
+        android:key="snooze_sec"
+        android:defaultValue="60"
+        android:dialogLayout="@layout/interval_picker"/>
+
+</PreferenceScreen>

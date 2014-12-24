@@ -16,7 +16,6 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.widget.RemoteViews;
 
 import com.shaibarack.wifitimer.R;
 import com.shaibarack.wifitimer.settings.SettingsActivity;
@@ -38,12 +37,10 @@ public class NotificationService extends Service {
 
     /** Fired when enabling wifi by user interaction or alarm. */
     private PendingIntent mEnablePending;
-    /** Shows countdown text inside notification. */
-    private RemoteViews mRemoteViews;
     /** Timer for notification countdown. */
     private CountDownTimer mCountDown;
     /** Notification to show when pending auto-enabling. */
-    private Notification mNotification;
+    private Notification.Builder mNotification;
     /** Time to trigger alarm in {@link System#currentTimeMillis()}. */
     private long mTriggerAtElapsedMillis;
     /** Registered on wifi enabling/enabled to auto-dismiss notification. */
@@ -62,39 +59,34 @@ public class NotificationService extends Service {
         Intent dismissIntent = new Intent(DISMISS_ACTION, null, this, NotificationService.class);
         mEnablePending = PendingIntent.getService(this, 0, enableIntent, 0);
 
-        mRemoteViews = new RemoteViews(getPackageName(), R.layout.notification_view);
-
-        Notification.Builder builder = new Notification.Builder(this)
+        mNotification = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.disabled_notification)
-                .setContentTitle(getString(R.string.notification_title))
                 // Tapping the notification goes to settings
                 .setContentIntent(PendingIntent.getActivity(this, 0, settingsIntent, 0))
                 // Tapping the notification doesn't dismiss it
                 .setAutoCancel(false)
                 // Listen on dismissal
                 .setDeleteIntent(PendingIntent.getService(this, 0, dismissIntent, 0))
-                .setPriority(Notification.PRIORITY_LOW)
-                .setContent(mRemoteViews);
+                .setPriority(Notification.PRIORITY_LOW);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            builder.setLocalOnly(true);
+            mNotification.setLocalOnly(true);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder.setVisibility(Notification.VISIBILITY_PUBLIC);
+            mNotification.setVisibility(Notification.VISIBILITY_PUBLIC);
         }
 
         if (mPrefs.getBoolean("show_enable_now", false)) {
-            builder.addAction(R.drawable.enabled_notification, getString(R.string.enable_now), mEnablePending);
+            mNotification.addAction(
+                    R.drawable.enabled_notification, getString(R.string.enable_now), mEnablePending);
         }
 
         if (mPrefs.getBoolean("show_snooze", false)) {
             Intent snoozeIntent = new Intent(SNOOZE_ACTION, null, this, NotificationService.class);
-            builder.addAction(R.drawable.snooze_notification, getString(R.string.snooze),
+            mNotification.addAction(R.drawable.snooze_notification, getString(R.string.snooze),
                     PendingIntent.getService(this, 0, snoozeIntent, 0));
         }
-
-        mNotification = builder.build();
     }
 
     @Override
@@ -136,8 +128,6 @@ public class NotificationService extends Service {
         int enableSec = mPrefs.getInt("sec_until_enable", 60);
         mTriggerAtElapsedMillis = SystemClock.elapsedRealtime() + enableSec * 1000;
 
-        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-
         setAlarm(mTriggerAtElapsedMillis);
         setCountDown(mTriggerAtElapsedMillis);
 
@@ -147,32 +137,30 @@ public class NotificationService extends Service {
 
     /** Enable wifi now. */
     private void enable() {
-        cancelLastAlarm();
+        mAlarmManager.cancel(mEnablePending);
+        mCountDown.cancel();
         mWifiManager.setWifiEnabled(true);
         stopSelf();
     }
 
     /** Dismiss alarm. */
     private void dismiss() {
-        cancelLastAlarm();
+        mAlarmManager.cancel(mEnablePending);
+        mCountDown.cancel();
         stopSelf();
     }
 
     /** Snooze alarm. */
     private void snooze() {
-        cancelLastAlarm();
+        mAlarmManager.cancel(mEnablePending);
         int snoozeSec = mPrefs.getInt("snooze_sec", 60);
         mTriggerAtElapsedMillis += snoozeSec * 1000;
         setAlarm(mTriggerAtElapsedMillis);
         setCountDown(mTriggerAtElapsedMillis);
     }
 
-    private void cancelLastAlarm() {
-        mAlarmManager.cancel(mEnablePending);
-    }
-
     private void setAlarm(long elapsedRealtimeMillis) {
-        cancelLastAlarm();
+        mAlarmManager.cancel(mEnablePending);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mAlarmManager.setExact(
                     AlarmManager.ELAPSED_REALTIME_WAKEUP, elapsedRealtimeMillis, mEnablePending);
@@ -197,6 +185,8 @@ public class NotificationService extends Service {
 
         public MyCountDownTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
+            // Force first tick at zero
+            onTick(millisInFuture);
         }
 
         @Override
@@ -204,8 +194,9 @@ public class NotificationService extends Service {
             int seconds = (int) (millisUntilFinished / 1000);
             int minutes = seconds / 60;
             seconds = seconds % 60;
-            mRemoteViews.setTextViewText(R.id.countdown,
-                    String.format("%02d:%02d", minutes, seconds));
+            mNotification.setContentTitle(String.format("%s %02d:%02d",
+                    getString(R.string.notification_title), minutes, seconds));
+            mNotificationManager.notify(NOTIFICATION_ID, mNotification.build());
         }
 
         @Override

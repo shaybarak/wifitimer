@@ -73,13 +73,14 @@ public class IntervalPreference extends DialogPreference {
 
     @Override
     public CharSequence getSummary() {
-        return String.format("%02d:%02d", mMinutes, mSeconds);
+        return String.format("%02d:%02d %s",
+                mMinutes, mSeconds, getContext().getString(R.string.minutes));
     }
 
-    private static class TwoDigitFormatter implements NumberPicker.Formatter {
+    private class TwoDigitFormatter implements NumberPicker.Formatter {
         @Override
         public String format(int i) {
-            return String.format("%02d", i);
+            return String.format("%02d %s", i);
         }
     }
 }

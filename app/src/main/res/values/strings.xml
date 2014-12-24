@@ -1,11 +1,15 @@
 <resources>
     <string name="app_name">Wi-Fi Timer</string>
-    <string name="sec_until_enable_title">Once disabled, enable after</string>
+    <string name="sec_until_enable_title">Automatically re-enable Wi-Fi after</string>
     <string name="show_enable_now_title">Show \"Enable now\" in notification</string>
     <string name="show_snooze_title">Show \"Snooze\" in notification</string>
     <string name="snooze_interval_title">Snooze length</string>
-    <string name="enable">Trigger when Wi-Fi disabled</string>
     <string name="notification_title">Enabling Wi-Fi at</string>
     <string name="enable_now">Enable now</string>
     <string name="snooze">Snooze</string>
+    <string name="preferences_title">Automatically re-enable Wi-Fi after it\'s been manually disabled</string>
+    <string name="preferences_summary">Use the settings below to customize behavior</string>
+    <string name="minutes">minutes</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
 </resources>

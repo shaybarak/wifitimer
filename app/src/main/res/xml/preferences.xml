@@ -1,7 +1,11 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/preferences_title"
+    android:summary="@string/preferences_summary">
 
     <SwitchPreference
-        android:title="@string/enable"
+        android:switchTextOn="@string/on"
+        android:switchTextOff="@string/off"
         android:key="enabled"
         android:defaultValue="true"/>
 
@@ -13,13 +17,13 @@
         android:defaultValue="60"
         android:dialogLayout="@layout/interval_picker"/>
 
-    <CheckBoxPreference
+    <SwitchPreference
         android:title="@string/show_enable_now_title"
         android:dependency="enabled"
         android:key="show_enable_now"
-        android:defaultValue="false"/>
+        android:defaultValue="true"/>
 
-    <CheckBoxPreference
+    <SwitchPreference
         android:title="@string/show_snooze_title"
         android:dependency="enabled"
         android:key="show_snooze"

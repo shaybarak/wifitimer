@@ -1,13 +1,11 @@
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/preferences_title"
-    android:summary="@string/preferences_summary">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
-        android:switchTextOn="@string/on"
-        android:switchTextOff="@string/off"
+        android:title="@string/enabled_title"
+        android:summary="@string/enabled_summary"
         android:key="enabled"
-        android:defaultValue="true"/>
+        android:defaultValue="true"
+        android:icon="@drawable/disabled_preferences"/>
 
     <com.shaibarack.wifitimer.settings.IntervalPreference
         android:title="@string/sec_until_enable_title"
@@ -15,19 +13,22 @@
         android:dependency="enabled"
         android:key="sec_until_enable"
         android:defaultValue="60"
-        android:dialogLayout="@layout/interval_picker"/>
+        android:dialogLayout="@layout/interval_picker"
+        android:icon="@drawable/time_preferences"/>
 
     <SwitchPreference
         android:title="@string/show_enable_now_title"
         android:dependency="enabled"
         android:key="show_enable_now"
-        android:defaultValue="true"/>
+        android:defaultValue="true"
+        android:icon="@drawable/enabled_preferences"/>
 
     <SwitchPreference
         android:title="@string/show_snooze_title"
         android:dependency="enabled"
         android:key="show_snooze"
-        android:defaultValue="true"/>
+        android:defaultValue="true"
+        android:icon="@drawable/snooze_preferences"/>
 
     <com.shaibarack.wifitimer.settings.IntervalPreference
         android:title="@string/snooze_interval_title"
@@ -35,6 +36,7 @@
         android:dependency="show_snooze"
         android:key="snooze_sec"
         android:defaultValue="60"
-        android:dialogLayout="@layout/interval_picker"/>
+        android:dialogLayout="@layout/interval_picker"
+        android:icon="@drawable/snooze_preferences"/>
 
 </PreferenceScreen>

@@ -37,16 +37,14 @@ public class NotificationService extends Service {
     private SharedPreferences mPrefs;
     private Calendar mCalendar;
 
-    /** Remember last alarm set for deduping. */
-    private PendingIntent mLastAlarm;
-    /** Registered on wifi enabling/enabled to auto-dismiss notification. */
-    private EnabledReceiver mReceiver;
     /** Fired when enabling wifi by user interaction or alarm. */
     private PendingIntent mEnablePending;
     /** Template for notification. Update title when setting and when snoozing. */
     private Notification.Builder mNotification;
     /** Time to trigger alarm in {@link System#currentTimeMillis()}. */
     private long mTriggerAtMillis;
+    /** Registered on wifi enabling/enabled to auto-dismiss notification. */
+    private EnabledReceiver mReceiver;
 
     @Override
     public void onCreate() {
@@ -172,9 +170,7 @@ public class NotificationService extends Service {
     }
 
     private void cancelLastAlarm() {
-        if (mLastAlarm != null) {
-            mAlarmManager.cancel(mLastAlarm);
-        }
+        mAlarmManager.cancel(mEnablePending);
     }
 
     private void setAlarm(long triggerAtMillis) {

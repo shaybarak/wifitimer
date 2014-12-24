@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/WifiTimer.iml" filepath="$PROJECT_DIR$/WifiTimer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wifitimer.iml" filepath="$PROJECT_DIR$/wifitimer.iml" />
     </modules>
   </component>
 </project>
